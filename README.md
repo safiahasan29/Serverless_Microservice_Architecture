@@ -338,7 +338,7 @@ Overall, AWS X-Ray tracing provides end-to-end visibility into the interactions 
 ![breakdown_percomponent.png](./images/breakdown_percomponent.png)
 
 
-#Secure Your AWS API Gateway Using Cognito - [Work-in-progress] 
+# Secure Your AWS API Gateway Using Cognito - [Work-in-progress] 
 ## HLD ![High Level Design](./images/HLD-version2.png)
 
 By default, your API Gateway endpoints lack security, leaving them accessible to anyone with the endpoint URL. To manage user access and handle sign-up/sign-in flows, consider leveraging Amazon Cognito.
