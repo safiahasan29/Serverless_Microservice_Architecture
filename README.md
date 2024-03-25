@@ -2,7 +2,7 @@
 Serverless Microservice Architecture using Amazon API Gateway, AWS Lambda and Amazon DynamoDB.
 
 ## High Level Design - Serverless Microservice Architecture
-![High Level Design](./images/HighLevelDesign-ServerlessMicroservice.png)
+![High Level Design](./images/HLD-version3.png)
 
 An Amazon API Gateway is a collection of resources and methods. For this tutorial, you create one resource (DynamoDBManager) and define one method (POST) on it. The method is backed by a Lambda function (LambdaFunctionOverHttps). That is, when you call the API through an HTTPS endpoint, Amazon API Gateway invokes the Lambda function.
 
@@ -318,8 +318,93 @@ Rerun the performance test in Postman to observe any improvements in performance
 ![Rerun_complete_result](./images/rerun_complete_report.png)
 By iteratively optimizing and testing your API performance, you can ensure its reliability and scalability to meet the demands of your users effectively.
 
+# How AWS X-Ray tracing works after enabling it for Amazon API Gateway and AWS Lambda:
+
+## Amazon API Gateway:
+
+When AWS X-Ray tracing is enabled for Amazon API Gateway, it captures incoming requests and traces their journey through the API Gateway.
+X-Ray creates segments for each API request, providing detailed information about the request processing, including latency, errors, and downstream calls.
+You can visualize the request flow, identify performance bottlenecks, and troubleshoot issues using the X-Ray console or API.
+
+## AWS Lambda:
+
+Enabling AWS X-Ray tracing for AWS Lambda allows you to trace the execution of Lambda functions invoked by API Gateway or other AWS services.
+X-Ray automatically instruments your Lambda function code to record detailed information about function invocations, including execution time, errors, and external service calls.
+X-Ray captures the trace data and creates a service map, showing the relationship between Lambda functions and other components in your application.
+With X-Ray, you can analyze the performance of your Lambda functions, identify inefficiencies, and optimize their execution to improve overall application performance.
+Overall, AWS X-Ray tracing provides end-to-end visibility into the interactions between API Gateway, Lambda functions, and other AWS services, helping you understand the performance and behavior of your serverless applications.
+
+![Breakdown](./images/Breakdown.png)
+![breakdown_percomponent.png](./images/breakdown_percomponent.png)
 
 
+#Secure Your AWS API Gateway Using Cognito - [Work-in-progress] 
+## HLD ![High Level Design](./images/HLD-version2.png)
+
+By default, your API Gateway endpoints lack security, leaving them accessible to anyone with the endpoint URL. To manage user access and handle sign-up/sign-in flows, consider leveraging Amazon Cognito.
+Utilize an Amazon Cognito user pool to regulate access to your API within Amazon API Gateway.
+
+Note - There are a lot of steps, so please bear with me. :)
+Note - AWS console UI has changed a lot so below steps are just for reference only. 
+
+## Step1 - Create a user pool in Amazon Cognito
+1. Navigate to Amazon Cognito and click on "Manage User Pools."
+2. Click on the "Create a User Pool" button and name your user pool "serverlesspool."
+3. Choose "Step through settings" and disable case sensitivity for usernames. Leave other settings as default and proceed.
+4. For password strength, set the minimum length to 6 characters and uncheck all options.
+5. Allow only admins to create users.
+6. Set the temporary password expiration to 7 days and proceed.
+7. Choose "No verification" for attribute verification.
+8. Provide a role for Amazon Cognito to send SMS messages, and click on "Create Role."
+9. Proceed with the default settings until you reach the review stage.
+10. Choose "No" for remembering user devices.
+11. Create the app client separately (see instructions below).
+12. Proceed to the next steps and click on "Create Pool."
+13. After creating the user pool, copy the generated pool ID and save it for later use.
+
+## Step2 - Create a App Client in Amazon Cognito
+1. Click on "Add an app client" and name your app client "serverless_app_client." Uncheck "Generate client secret" and click on the "Create app client" button.
+2. After creating the app client, copy the generated app client ID and save it for later use.
+
+## Step3 - App Integration in Amazon Cognito
+1. Navigate to "App integration," then select "Domain name." Under "Amazon Cognito Domain," input "https://api-test-tryout," check its availability, and save the changes. (This domain hosts your sign-in UI, which Amazon provides for you.)
+2. After creating hosted domain - It generated hosted domain URL. (Please copy and paste this ID into a notepad for later use.)
+
+## Step4 - App Client Setting in Amazon Cognito
+1. Click on "App integration," then navigate to "App client settings." Check the box for "Cognito user pool" to enable the identity provider.
+2. Set the "Sign in" and "Sign out" URLs. For the callback URL, use "https://example.com" or "https://google.com." Use the same URL for both sign-in and sign-out.
+3. Here's how it works: The Cognito hosted UI prompts users to sign in with their username and password. Once logged in successfully, users are directed to the specified URL ("https://example.com" or "https://google.com").
+4. Under "OAuth 2.0," select the OAuth flow and scope enabled for this app. For "Allowed OAuth flows," enable "Authorization code grant" and "Implicit grant." For "Allowed OAuth scopes," enable all options (phone, email, opened, Cognito sign-in, profile). Click on "Save changes" to apply the settings.
+
+## Step5 - Sign up users to user pool in Amazon Cognito
+1. Navigate to General settings and select "Users and groups."
+2. Click on the "Create user" button, then enter the username as "testuser" and set the password.
+3. Disable all additional options, then click on the "Create user" button to confirm. You have now successfully created one user named "testuser."
+
+ 
+## Step6 - Assign user pool as Authorizer for API Gateway method
+1. Navigate to API Gateway and select your API. Click on "Authorizers," then hit the "Create new authorizer" button. Provide a name such as "serverless-authorizer," choose "Cognito" as the type, set the target source to "Authorization," which retrieves the id_token. Finally, click "Create."
+2. Within API Gateway, select your API, navigate to "Resources," and choose the desired method (e.g., POST). Click on "Method request," and under settings, change the Authorization setting from "None" to "Cognito user pool" (selecting the previously created "serverless-authorizer").
+
+
+## Step7 - User exchange Credentials and receive token from Cognito.
+1. Cognito hosted UI follow a particular URL format - 
+https://<your_hostedomainurl_fromstep3>/login?response_type&client_id=<your_client_id_fromstep2>&redirect_uri=<your_callback_url_fromstep4>
+2. Open a browser and paste the above URL into the address bar.
+3. The Cognito hosted UI will prompt you to enter your username and password. Proceed by clicking "Sign In."
+4. Since the user was created by an admin, you'll be asked to enter a new password. You can enter any email since we're not verifying it (refer to steps 1-11). Click on "Send."
+5. You will now be directed to example.com (your callback URL).
+6. Observe the URL in the browser and copy it to a notepad. You should see three fields: id_token, token_type, and access_token. You only need the id_token.
+
+## Step 8 - Test it
+1. Go to API Gateway and click on the Authorizer (serverless-authorizer).
+2. In the textbox for Authorization token (header), paste your id_token value (as obtained in the last step of Step 7).
+3. Click on "Test" and verify that the response code is 200. Additionally, observe the fields related to the user in the response.
+
+## Step 9 - Deploy your API and test in Postman tool
+1. In Postman, select the POST method and paste the API Gateway invoke URL.
+2. Click on the "Headers" tab. Set the key as "Authorization" and the value as your id_token. Click on "Send."
+3. Verify the response body.
 
 ## Cleanup
 
