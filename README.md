@@ -1,5 +1,5 @@
 # Serverless Microservice Architecture
-Serverless Microservice Architecture using API Gateway, Lambda and DynamoDB.
+Serverless Microservice Architecture using Amazon API Gateway, AWS Lambda and Amazon DynamoDB.
 
 ## High Level Design - Serverless Microservice Architecture
 ![High Level Design](./images/HighLevelDesign-ServerlessMicroservice.png)
@@ -283,10 +283,46 @@ In this step, you deploy the API that you created to a stage called prod.
 
 We have successfully created a serverless API using API Gateway, Lambda, and DynamoDB!
 
+
+API performance testing plays a crucial role in ensuring the reliability and scalability of your APIs. By conducting performance tests, you can achieve the following objectives:
+
+1. Validate that your API can handle the expected load and analyze its response under various load conditions.
+2. Optimize and enhance the performance of your API to deliver a seamless user experience.
+3. Identify any bottlenecks, latency issues, or failures to ensure the scalability of your system.
+
+## Performing API Performance Testing using Postman
+
+Follow these steps to conduct API performance testing using Postman:
+
+Create a new collection named "Serverless API Performance Testing" in the Postman desktop app.
+![collection](./images/collection.png)
+![collectionname](./images/collection_name.png)
+![viewaction](./images/viewaction.png)
+Add a new request to the collection, selecting the "POST" method and providing the API invoke URL.
+![savepost](./images/Save_postrequest.png)
+In the request body, input the desired JSON payload to simulate the API operation.
+Capture the current configuration of your Lambda function by accessing the AWS Lambda Console.
+![initial_lambdaconfig](./images/initial_lambdaconfig.png)
+Run the collection in Postman, specifying the desired number of virtual users, test duration, and load profile.
+Monitor the performance metrics such as average response time, throughput, and error rate in real-time during the test execution.
+![inital_run_complete_result](./images/inital_run_complete_result.png)
+
+## Improving API Performance
+
+To enhance the performance of your API, consider the following steps:
+
+Increase the memory allocation for your Lambda function through the AWS Lambda Console.
+![inital_run_complete_result](./images/lambdamemoryoptimizedconig.png)
+Rerun the performance test in Postman to observe any improvements in performance metrics.
+![Rerun_complete_result](./images/rerun_complete_report.png)
+By iteratively optimizing and testing your API performance, you can ensure its reliability and scalability to meet the demands of your users effectively.
+
+
+
+
 ## Cleanup
 
 Let's clean up the resources we have created for this lab.
-
 
 ### Cleaning up DynamoDB
 
