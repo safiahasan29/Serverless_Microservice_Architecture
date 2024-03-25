@@ -324,7 +324,7 @@ By iteratively optimizing and testing your API performance, you can ensure its r
 
 When AWS X-Ray tracing is enabled for Amazon API Gateway, it captures incoming requests and traces their journey through the API Gateway.
 X-Ray creates segments for each API request, providing detailed information about the request processing, including latency, errors, and downstream calls.
-You can visualize the request flow, identify performance bottlenecks, and troubleshoot issues using the X-Ray console or API.
+You can visualize the request flow, identify performance bottlenecks, and troubleshoot issues using the X-Ray console.
 
 ## AWS Lambda:
 
