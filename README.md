@@ -290,7 +290,7 @@ API performance testing plays a crucial role in ensuring the reliability and sca
 2. Optimize and enhance the performance of your API to deliver a seamless user experience.
 3. Identify any bottlenecks, latency issues, or failures to ensure the scalability of your system.
 
-## Performing API Performance Testing using Postman
+## Performing API Performance and Load Testing using Postman
 
 Follow these steps to conduct API performance testing using Postman:
 
@@ -304,6 +304,7 @@ In the request body, input the desired JSON payload to simulate the API operatio
 Capture the current configuration of your Lambda function by accessing the AWS Lambda Console.
 ![initial_lambdaconfig](./images/initial_lambdaconfig.png)
 Run the collection in Postman, specifying the desired number of virtual users, test duration, and load profile.
+![virtualusers](./images/virtualusers.png)
 Monitor the performance metrics such as average response time, throughput, and error rate in real-time during the test execution.
 ![inital_run_complete_result](./images/inital_run_complete_result.png)
 
