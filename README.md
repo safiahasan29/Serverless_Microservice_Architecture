@@ -2,7 +2,7 @@
 Serverless Microservice Architecture using Amazon API Gateway, AWS Lambda and Amazon DynamoDB.
 
 ## High Level Design - Serverless Microservice Architecture
-![High Level Design](./images/HLD-version5.png)
+![High Level Design](./images/HDL-version5.png)
 
 An Amazon API Gateway is a collection of resources and methods. For this tutorial, you create one resource (DynamoDBManager) and define one method (POST) on it. The method is backed by a Lambda function (LambdaFunctionOverHttps). That is, when you call the API through an HTTPS endpoint, Amazon API Gateway invokes the Lambda function.
 
