@@ -1,4 +1,4 @@
-# Serverless_Microservice_Architecture
+# Serverless Microservice Architecture
 Serverless Microservice Architecture using API Gateway, Lambda and DynamoDB.
 
 ## High Level Design - Serverless Microservice Architecture
